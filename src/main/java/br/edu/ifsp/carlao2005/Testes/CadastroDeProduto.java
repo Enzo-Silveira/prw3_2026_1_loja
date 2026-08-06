@@ -8,11 +8,12 @@ import br.edu.ifsp.carlao2005.util.JPAUtil;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class CadastroDeProduto {
     public static void main(String[] args) {
 
-        Categoria celulares = new Categoria("CELULARES");
+        //Categoria celulares = new Categoria("CELULARES");
 
 //        // Criando um objeto da Classe Produto:
 //        Produto celular1 = new Produto("Samsung S","Muito caro",new BigDecimal("2700"), celulares);
@@ -142,20 +143,67 @@ public class CadastroDeProduto {
 //----------------------------------------------------------------------------
 
         // Criando a Categoria "ESPORTE2":
-        Categoria esporte = new Categoria("ESPORTE2");
+//        Categoria esporte = new Categoria("ESPORTE2");
+//        EntityManager em = JPAUtil.getEntityManager();
+//        CategoriaDao categoriaDao = new CategoriaDao(em);
+//// Iniciando a transação:
+//        em.getTransaction().begin();
+//// Mudando para o estado managed:
+//        em.persist(esporte);
+//// Trocando o texto no objeto:
+//        esporte.setNome("ESPORTE2 atualizado");
+//// Apagando...
+//        em.remove(esporte);
+//// Finalizando a transação:
+//        em.getTransaction().commit();
+//// Fechando o EntityManager
+//        em.close();
+
+//----------------------------------------------------------------------------
+
+        //cadastrarProdutos();
+
         EntityManager em = JPAUtil.getEntityManager();
+        ProdutoDao produtoDao = new ProdutoDao(em);
+        BigDecimal precoDeskjet = produtoDao.buscarPrecoDoProdutoComNome("Deskjet 3776");
+        System.out.println("\nPreço da Deskjet: " + precoDeskjet);
+    }
+
+    ///////////////////////////////////////////////////////
+
+    private static void cadastrarProdutos() {
+// Criando a Categoria "CELULARES":
+        Categoria celulares = new Categoria("CELULARES");
+// Criando a Categoria "INFORMATICA":
+        Categoria informatica = new Categoria("INFORMATICA");
+// Criando objetos da Classe Produto, associados a categoria CELULARES:
+        Produto celular1 = new Produto("Celular UM", "Motorola",
+                new BigDecimal("1000"), celulares);
+        Produto celular2 = new Produto("Celular DOIS", "Samsung",
+                new BigDecimal("2000"), celulares);
+// Criando objetos da Classe Produto, associados a categoria INFORMATICA:
+        Produto comp1 = new Produto("Deskjet 3776", "HP",
+                new BigDecimal("700"), informatica);
+        Produto comp2 = new Produto("Notebook i7", "DELL",
+                new BigDecimal("9000"), informatica);
+// Criando o EntityManager:
+        EntityManager em = JPAUtil.getEntityManager();
+// Criando os DAOs:
+        ProdutoDao produtoDao = new ProdutoDao(em);
         CategoriaDao categoriaDao = new CategoriaDao(em);
 // Iniciando a transação:
         em.getTransaction().begin();
-// Mudando para o estado managed:
-        em.persist(esporte);
-// Trocando o texto no objeto:
-        esporte.setNome("ESPORTE2 atualizado");
-// Apagando...
-        em.remove(esporte);
-// Finalizando a transação:
+// Persistindo os objetos:
+        categoriaDao.cadastrar(celulares);
+        categoriaDao.cadastrar(informatica);
+        produtoDao.cadastrar(celular1);
+        produtoDao.cadastrar(celular2);
+        produtoDao.cadastrar(comp1);
+        produtoDao.cadastrar(comp2);
+// Finalizando (commit) a transação:
         em.getTransaction().commit();
-// Fechando o EntityManager
+// Fechando o EntityManager:
         em.close();
     }
+
 }
